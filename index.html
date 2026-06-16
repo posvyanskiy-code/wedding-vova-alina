@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вова & Алина · 15.06.2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF8;
+      --text: #1A1A1A;
+      --azure: #2458D4;
+      --coral: #FF6E52;
+      --serif: 'Playfair Display', Georgia, serif;
+      --script: 'Caveat', cursive;
+      --body: system-ui, -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    section { padding: 80px 24px; }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      font-family: var(--script);
+      font-size: 1.4rem;
+      color: var(--azure);
+      margin-bottom: 48px;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--delay, 0ms);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 60px 20px; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .hero__photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(100%);
+    }
+
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      padding: 60px 40px;
+      color: #fff;
+    }
+
+    .hero__script {
+      font-family: var(--script);
+      font-size: 1.5rem;
+      opacity: 0.85;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .hero__names {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--coral);
+      letter-spacing: -0.03em;
+    }
+
+    .hero__date {
+      font-family: var(--serif);
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--azure);
+      margin-top: 16px;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── INVITE ── */
+    .invite {
+      max-width: 660px;
+      margin: 0 auto;
+    }
+
+    .invite__greeting {
+      font-family: var(--script);
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--coral);
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    .invite__body {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .invite__body p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .invite__body p:first-child {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+    }
+
+    .invite__sign {
+      font-family: var(--script);
+      font-size: 1.6rem;
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .invite__sign span:first-child { color: var(--coral); }
+    .invite__sign span:last-child  { color: var(--azure); }
+
+    /* ── PROGRAM ── */
+    .program { max-width: 680px; margin: 0 auto; }
+
+    .program__poster {
+      position: relative;
+      height: 680px;
+    }
+
+    .poster__river {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    /* event text — no frames, just typography */
+    .pevent {
+      position: absolute;
+      z-index: 1;
+      max-width: 44%;
+    }
+
+    .pevent--1 { right: 20px; left: auto; top: 24px;  max-width: 240px; text-align: right; }
+    .pevent--2 { left: 0;    top: 248px; max-width: 160px; }
+    .pevent--3 { right: 20px; left: auto; top: 472px; max-width: 240px; text-align: right; }
+
+    .pevent__time {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .pevent--1 .pevent__time,
+    .pevent--3 .pevent__time { color: var(--azure); }
+    .pevent--2 .pevent__time { color: var(--coral); }
+
+    .pevent__place {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .pevent__desc {
+      font-size: 0.82rem;
+      opacity: 0.55;
+      margin-top: 3px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 600px) {
+      .program__poster { height: auto; display: flex; flex-direction: column; gap: 36px; padding: 12px 0; }
+      .poster__river { display: none; }
+      .pevent { position: static; max-width: 100%; }
+    }
+
+    /* ── DRESSCODE ── */
+    .dresscode {
+      background: #F0EFEC;
+    }
+
+    .dresscode__inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .dresscode__grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .dresscode__photo {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: grayscale(100%);
+      transition: filter 0.45s ease;
+    }
+
+    .dresscode__photo:hover {
+      filter: grayscale(0%);
+    }
+
+    .dresscode__text {
+      font-size: 1.05rem;
+      max-width: 540px;
+      opacity: 0.75;
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+
+    .dresscode__palette {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .palette-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .palette-swatch__color {
+      width: 56px;
+      height: 56px;
+    }
+
+    .palette-swatch__hex {
+      font-family: var(--body);
+      font-size: 0.7rem;
+      letter-spacing: 0.03em;
+      opacity: 0.55;
+    }
+
+    @media (max-width: 600px) {
+      .dresscode__grid { grid-template-columns: repeat(3, 1fr); }
+      .dresscode__grid .dresscode__photo:nth-child(n+4) { display: none; }
+    }
+
+    @media (max-width: 360px) {
+      .dresscode__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── GIFTS ── */
+    .gifts {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .gifts__placeholder {
+      border: 1.5px dashed var(--coral);
+      padding: 40px;
+      text-align: center;
+      font-family: var(--script);
+      font-size: 1.4rem;
+      color: var(--coral);
+      opacity: 0.7;
+    }
+
+    #gifts-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    #gifts-list li {
+      padding: 16px 20px;
+      border-left: 3px solid var(--azure);
+      font-size: 1rem;
+    }
+
+    /* ── SECTION BACKGROUNDS ── */
+    .section--invite { background: #FAE2D8; }
+    .section--program { background: #EBF0FC; }
+
+    /* ── TTS BUTTON ── */
+    .tts-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 28px;
+      padding: 9px 18px;
+      border: 1.5px solid var(--azure);
+      background: none;
+      cursor: pointer;
+      font-family: var(--body);
+      font-size: 0.88rem;
+      color: var(--azure);
+      letter-spacing: 0.02em;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tts-btn:hover { background: var(--azure); color: #fff; }
+    .tts-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 60px 24px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .footer__names {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .footer__names span:first-child { color: var(--coral); }
+    .footer__names span:last-child { color: var(--azure); }
+
+    .footer__sub {
+      font-family: var(--script);
+      font-size: 1.2rem;
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <img class="hero__photo" src="assets/couple.jpg" alt="Вова и Алина">
+    <div class="hero__overlay"></div>
+    <div class="hero__content fade-in">
+      <span class="hero__script">свадьба</span>
+      <h1 class="hero__names">Вова<br>&amp; Алина</h1>
+      <p class="hero__date">15 · 06 · 2026</p>
+    </div>
+  </section>
+
+  <section class="section--invite">
+    <div class="invite fade-in">
+      <div class="invite__greeting">Друзья, привет!<br>Это Алина и Вова.</div>
+      <button class="tts-btn" id="tts-btn" onclick="toggleTTS()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span id="tts-label">Если лень читать</span>
+        </button>
+
+      <div class="invite__body">
+        <p>15 июля мы официально станем семьёй — хотя 1,5 года ремонта и тесная съёмная квартира, Тесса, ежедневно в 7 утра прыгающая к нам в кровать, бесуны с Лизой и наши очень большие планы на будущее уже давно все решили за нас.</p>
+        <p>Вова давно смирился с тем, что в будни на завтрак его ждут только хлопья, а Алина стойко принимает уже 80% Вовиных шуток. Это и называется идиллия. И нам правда очень хорошо вместе — и мы рады следующему этапу в нашей совместной жизни.</p>
+        <p>И всё же этот день крайне трепетный и важный для нас. Мы не изменяем своей любви к хорошим людям и игристому, поэтому будем рады видеть вас в этот день рядом с нами.</p>
+        <p>План у нас простой и, как нам кажется, безупречный: сначала плаваем на яхте под «Яхту, парус». Яхта называется «Алиса», хотя видит бог, судьба давала владельцам шанс назвать её правильно. Много обнимаемся, безусловно пьём и, возможно, даже плачем от радости. А вечером отправляемся в настоящий паб смотреть полуфинал ЧМ-2026.</p>
+        <p>Нам хочется, чтобы в этот день всё было именно так: без лишней торжественности, зато с вами, хорошим настроением и ощущением того, что жизнь удалась.</p>
+        <div class="invite__sign">
+          <span>Алина</span><span>&amp;</span><span>Вова</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--program">
+    <div class="program fade-in">
+      <h2 class="section-title">Программа</h2>
+      <p class="section-sub">что нас ждёт</p>
+
+      <div class="program__poster">
+
+        <!-- ═══ RIVER SVG: S-curve wide filled path + large illustrations ═══ -->
+        <svg class="poster__river" viewBox="0 0 680 680" fill="none" preserveAspectRatio="xMidYMid meet">
+
+          <!-- River body: fat soft stroke -->
+          <path d="M 340 -10 C 340 110, 60 160, 60 310 C 60 460, 530 500, 490 680"
+                stroke="var(--azure)" stroke-width="160" stroke-linecap="round" opacity="0.07"/>
+          <!-- River crisp edge -->
+          <path d="M 340 -10 C 340 110, 60 160, 60 310 C 60 460, 530 500, 490 680"
+                stroke="var(--azure)" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+
+
+        </svg>
+
+        <!-- ═══ EVENTS — just text, no frames ═══ -->
+
+        <div class="pevent pevent--1 fade-in" style="--delay:120ms">
+          <div class="pevent__time">15:45</div>
+          <div class="pevent__place">Яхтклуб Буревестник</div>
+          <div class="pevent__desc">Сбор гостей. Начинаем вместе.</div>
+        </div>
+
+        <div class="pevent pevent--2 fade-in" style="--delay:300ms">
+          <div class="pevent__time">16:30</div>
+          <div class="pevent__place">На яхте</div>
+          <div class="pevent__desc">Отходим. Игристое. Море.</div>
+        </div>
+
+        <div class="pevent pevent--3 fade-in" style="--delay:480ms">
+          <div class="pevent__time">21:30</div>
+          <div class="pevent__place">Бар Speakers</div>
+          <div class="pevent__desc">1/2 финала ЧМ. Смотрим вместе.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="dresscode">
+    <div class="dresscode__inner fade-in">
+      <h2 class="section-title">Дресс-код</h2>
+      <p class="section-sub">спорт / стрит стайл</p>
+      <div class="dresscode__grid">
+        <img class="dresscode__photo" loading="lazy" src="assets/dc1.jpg" alt="">
+        <img class="dresscode__photo" loading="lazy" src="assets/dc2.jpg" alt="">
+        <img class="dresscode__photo" loading="lazy" src="assets/dc3.jpg" alt="">
+        <img class="dresscode__photo" loading="lazy" src="assets/dc4.jpg" alt="">
+        <img class="dresscode__photo" loading="lazy" src="assets/dc5.jpg" alt="">
+      </div>
+      <p class="dresscode__text">Приходите как вам удобно двигаться — всё равно будем танцевать.</p>
+      <div class="dresscode__palette">
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#8DADF1"></div>
+          <span class="palette-swatch__hex">#8DADF1</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#2458D4"></div>
+          <span class="palette-swatch__hex">#2458D4</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#FAE2D8"></div>
+          <span class="palette-swatch__hex">#FAE2D8</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#FF6E52"></div>
+          <span class="palette-swatch__hex">#FF6E52</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#EBA140"></div>
+          <span class="palette-swatch__hex">#EBA140</span>
+        </div>
+        <div class="palette-swatch">
+          <div class="palette-swatch__color" style="background:#F6A493"></div>
+          <span class="palette-swatch__hex">#F6A493</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="gifts fade-in">
+      <h2 class="section-title">Подарки</h2>
+      <p class="section-sub">список пожеланий</p>
+      <div class="gifts__placeholder">
+        Список появится здесь ✦
+      </div>
+      <ul id="gifts-list">
+        <!-- добавь сюда <li>пожелание</li> когда будешь готов -->
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer fade-in">
+    <div class="footer__names">
+      <span>Вова</span> &amp; <span>Алина</span>
+    </div>
+    <p class="footer__sub">Ждём вас · 15.06.2026</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    function toggleTTS() {
+      const label = document.getElementById('tts-label');
+      const IDLE = 'Если лень читать';
+      if (speechSynthesis.speaking || speechSynthesis.pending) {
+        speechSynthesis.cancel();
+        label.textContent = IDLE;
+        return;
+      }
+      const text = document.querySelector('.invite__body').innerText;
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = 'ru-RU';
+      utt.rate = 1.5;
+      utt.onend = utt.onerror = () => { label.textContent = IDLE; };
+
+      function doSpeak() {
+        const voices = speechSynthesis.getVoices();
+        const ru = voices.find(v => v.lang.startsWith('ru'));
+        if (ru) utt.voice = ru;
+        label.textContent = 'остановить';
+        speechSynthesis.speak(utt);
+      }
+
+      if (speechSynthesis.getVoices().length > 0) {
+        doSpeak();
+      } else {
+        speechSynthesis.onvoiceschanged = doSpeak;
+      }
+    }
+  </script>
+</body>
+</html>
