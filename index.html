@@ -6,16 +6,16 @@
   <title>Вова & Алина · 15.06.2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700;900&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #FAFAF8;
       --text: #1A1A1A;
       --azure: #2458D4;
       --coral: #FF6E52;
-      --serif: 'Playfair Display', Georgia, serif;
+      --serif: 'Jost', system-ui, sans-serif;
       --script: 'Caveat', cursive;
-      --body: system-ui, -apple-system, sans-serif;
+      --body: 'Jost', system-ui, sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,7 +107,7 @@
 
     .hero__names {
       font-family: var(--serif);
-      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-size: clamp(4rem, 11vw, 8rem);
       font-weight: 900;
       line-height: 1;
       color: var(--coral);
@@ -130,8 +130,9 @@
     }
 
     .invite__greeting {
-      font-family: var(--script);
+      font-family: var(--serif);
       font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
       color: var(--coral);
       margin-bottom: 32px;
       line-height: 1.2;
@@ -155,7 +156,8 @@
     }
 
     .invite__sign {
-      font-family: var(--script);
+      font-family: var(--serif);
+      font-weight: 700;
       font-size: 1.6rem;
       margin-top: 16px;
       display: flex;
@@ -189,9 +191,9 @@
       max-width: 44%;
     }
 
-    .pevent--1 { right: 20px; left: auto; top: 24px;  max-width: 240px; text-align: right; }
-    .pevent--2 { left: 0;    top: 248px; max-width: 160px; }
-    .pevent--3 { right: 20px; left: auto; top: 472px; max-width: 240px; text-align: right; }
+    .pevent--1 { left: 350px; top: 30px; max-width: 250px; text-align: left; }
+    .pevent--2 { left: 0; top: 248px; max-width: 150px; text-align: right; }
+    .pevent--3 { right: 20px; left: auto; top: 472px; max-width: 260px; text-align: left; }
 
     .pevent__time {
       font-family: var(--serif);
@@ -260,33 +262,57 @@
       font-size: 1.05rem;
       max-width: 540px;
       opacity: 0.75;
-      font-style: italic;
       margin-bottom: 28px;
     }
 
     .dresscode__palette {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
+      align-items: flex-end;
+      padding: 4px 0;
     }
 
     .palette-swatch {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      transform: translateY(var(--ty, 0px));
     }
 
-    .palette-swatch__color {
-      width: 56px;
-      height: 56px;
+    .palette-swatch:nth-child(1) { --ty: 0px; }
+    .palette-swatch:nth-child(2) { --ty: -7px; }
+    .palette-swatch:nth-child(3) { --ty: 5px; }
+    .palette-swatch:nth-child(4) { --ty: -4px; }
+    .palette-swatch:nth-child(5) { --ty: 3px; }
+    .palette-swatch:nth-child(6) { --ty: -9px; }
+
+    .palette-swatch__blob {
+      display: block;
+      width: 80px;
+      height: 52px;
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.35s ease, filter 0.35s ease;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.10));
     }
+
+    .palette-swatch__blob:hover {
+      transform: rotate(0deg) scale(1.1);
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
+    }
+
+    .palette-swatch:nth-child(1) .palette-swatch__blob { --rot: -5deg; }
+    .palette-swatch:nth-child(2) .palette-swatch__blob { --rot:  4deg; }
+    .palette-swatch:nth-child(3) .palette-swatch__blob { --rot: -2deg; }
+    .palette-swatch:nth-child(4) .palette-swatch__blob { --rot:  6deg; }
+    .palette-swatch:nth-child(5) .palette-swatch__blob { --rot: -4deg; }
+    .palette-swatch:nth-child(6) .palette-swatch__blob { --rot:  3deg; }
 
     .palette-swatch__hex {
-      font-family: var(--body);
-      font-size: 0.7rem;
-      letter-spacing: 0.03em;
-      opacity: 0.55;
+      font-family: var(--script);
+      font-size: 0.9rem;
+      opacity: 0.6;
     }
 
     @media (max-width: 600px) {
@@ -423,10 +449,10 @@
         <svg class="poster__river" viewBox="0 0 680 680" fill="none" preserveAspectRatio="xMidYMid meet">
 
           <!-- River body: fat soft stroke -->
-          <path d="M 340 -10 C 340 110, 60 160, 60 310 C 60 460, 530 500, 490 680"
+          <path d="M 340 -10 C 340 110, 200 160, 200 310 C 200 460, 530 500, 490 680"
                 stroke="var(--azure)" stroke-width="160" stroke-linecap="round" opacity="0.07"/>
           <!-- River crisp edge -->
-          <path d="M 340 -10 C 340 110, 60 160, 60 310 C 60 460, 530 500, 490 680"
+          <path d="M 340 -10 C 340 110, 200 160, 200 310 C 200 460, 530 500, 490 680"
                 stroke="var(--azure)" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
 
 
@@ -470,27 +496,39 @@
       <p class="dresscode__text">Приходите как вам удобно двигаться — всё равно будем танцевать.</p>
       <div class="dresscode__palette">
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#8DADF1"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 8,34 C 3,20 14,5 36,4 C 58,3 78,10 86,22 C 92,30 86,44 66,48 C 44,52 14,48 7,38 Z" fill="#8DADF1"/>
+          </svg>
           <span class="palette-swatch__hex">#8DADF1</span>
         </div>
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#2458D4"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 10,26 C 8,10 22,2 46,3 C 70,4 84,13 87,27 C 90,38 80,48 56,50 C 30,52 11,44 9,34 Z" fill="#2458D4"/>
+          </svg>
           <span class="palette-swatch__hex">#2458D4</span>
         </div>
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#FAE2D8"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 5,30 C 2,16 15,6 38,5 C 62,4 80,9 88,20 C 94,28 88,42 68,47 C 44,52 12,48 5,36 Z" fill="#FAE2D8"/>
+          </svg>
           <span class="palette-swatch__hex">#FAE2D8</span>
         </div>
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#FF6E52"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 7,28 C 4,13 18,4 42,4 C 66,4 83,12 88,25 C 92,35 84,46 60,50 C 36,54 10,46 6,34 Z" fill="#FF6E52"/>
+          </svg>
           <span class="palette-swatch__hex">#FF6E52</span>
         </div>
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#EBA140"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 9,32 C 5,17 18,5 40,5 C 62,5 80,11 87,24 C 93,33 86,46 62,49 C 38,52 12,46 8,36 Z" fill="#EBA140"/>
+          </svg>
           <span class="palette-swatch__hex">#EBA140</span>
         </div>
         <div class="palette-swatch">
-          <div class="palette-swatch__color" style="background:#F6A493"></div>
+          <svg class="palette-swatch__blob" viewBox="0 0 90 52" fill="none">
+            <path d="M 6,26 C 8,10 24,3 48,4 C 72,5 86,15 89,28 C 92,38 82,48 57,50 C 32,52 8,44 5,32 Z" fill="#F6A493"/>
+          </svg>
           <span class="palette-swatch__hex">#F6A493</span>
         </div>
       </div>
