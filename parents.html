@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vova & Alina · Родители</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #EDEAE4; }
+    body { height: 420vh; background: #EDEAE4; }
+
+    .stage {
+      position: fixed;
+      inset: 0;
+      background: #EDEAE4;
+    }
+
+    /* SVG is first child → renders below slides */
+    .deco-line {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      will-change: opacity, transform;
+    }
+
+    .slide img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    @media (min-width: 640px) {
+      .slide { padding: 32px; }
+      .slide img {
+        width: auto; height: auto;
+        max-width: 100%; max-height: 100%;
+        border-radius: 6px;
+        box-shadow: 0 24px 70px rgba(0,0,0,0.18);
+      }
+    }
+
+    /* ── Dots ── */
+    .dots {
+      position: fixed;
+      right: 16px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 20;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(0,0,0,0.18);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.on { background: rgba(0,0,0,0.55); transform: scale(1.5); }
+
+    /* ── Scroll hint ── */
+    .hint {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(0,0,0,0.35);
+      font-family: system-ui, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      z-index: 20;
+      transition: opacity 0.6s;
+      animation: bob 1.8s ease-in-out infinite;
+    }
+    .hint.gone { opacity: 0; pointer-events: none; }
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(7px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!--
+    Three short paths — one per slide.
+    Each lives only in the top ~25% of the viewport (the empty letterbox
+    above the landscape image). Opacity is driven by the slide's opacity,
+    so the line appears / disappears together with its slide.
+    Each path is slightly different in curve direction for variety.
+  -->
+  <svg class="deco-line"
+       viewBox="0 0 375 812"
+       preserveAspectRatio="xMidYMid meet"
+       xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Slide 0 — rightward curve, reaches image top -->
+    <path id="line-0"
+      d="M 192 0 C 240 80, 255 170, 220 255 C 202 310, 192 360, 192 420"
+      fill="none" stroke="#2458D4" stroke-width="1.5"
+      stroke-linecap="round" opacity="0"/>
+
+    <!-- Slide 1 — leftward S, reaches image top -->
+    <path id="line-1"
+      d="M 192 0 C 148 75, 132 165, 162 250 C 178 305, 186 360, 188 420"
+      fill="none" stroke="#2458D4" stroke-width="1.5"
+      stroke-linecap="round" opacity="0"/>
+
+    <!-- Slide 2 — loop at top, then flows down to image -->
+    <path id="line-2"
+      d="M 192 0 C 240 42, 248 92, 224 112
+         C 200 132, 178 126, 182 108
+         C 186 90, 200 95, 200 112
+         C 200 150, 185 210, 183 268
+         C 181 322, 188 375, 192 420"
+      fill="none" stroke="#2458D4" stroke-width="1.5"
+      stroke-linecap="round" opacity="0"/>
+  </svg>
+
+  <div class="slide"><img src="assets/parents-1.png" alt=""></div>
+  <div class="slide"><img id="slide2img" src="assets/guest-1.png" alt=""></div>
+  <div class="slide"><img src="assets/parents-3.png" alt=""></div>
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="hint" id="hint">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <polyline points="3,6 9,12 15,6" stroke="currentColor" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  листать
+</div>
+
+<script>
+  // ── Guest param → slide 2 image ──
+  const guest = new URLSearchParams(window.location.search).get('guest');
+  if (guest >= 1 && guest <= 5) {
+    document.getElementById('slide2img').src = `assets/guest-${guest}.png`;
+  }
+
+  const slides  = Array.from(document.querySelectorAll('.slide'));
+  const lines   = [0, 1, 2].map(i => document.getElementById('line-' + i));
+  const hint    = document.getElementById('hint');
+  const N       = slides.length;
+  const SECTION = 1.4;
+  const OVERLAP = 0.28;
+  const TY_IN   =  22;
+  const TY_OUT  = -14;
+
+  // Pre-calculate path lengths for draw-on-enter effect
+  const lineLens = lines.map(l => l.getTotalLength());
+  lines.forEach((l, i) => {
+    l.style.strokeDasharray  = lineLens[i];
+    l.style.strokeDashoffset = lineLens[i]; // hidden initially
+  });
+
+  // ── Dots ──
+  const dotsEl = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.onclick = () => window.scrollTo({
+      top: i * SECTION * window.innerHeight, behavior: 'smooth'
+    });
+    dotsEl.appendChild(d);
+  });
+  const dots = Array.from(document.querySelectorAll('.dot'));
+
+  function ease(t) { return t * t * (3 - 2 * t); }
+
+  function update() {
+    const sy  = window.scrollY;
+    const vh  = window.innerHeight;
+
+    let activeIdx = 0, maxOp = -1;
+
+    slides.forEach((el, i) => {
+      const center       = i * SECTION * vh;
+      const fadeInStart  = center - OVERLAP * vh;
+      const fadeInEnd    = center;
+      const fadeOutStart = center + (SECTION - OVERLAP) * vh;
+      const fadeOutEnd   = center + SECTION * vh;
+
+      // ── Slide opacity ──
+      let opacity, ty;
+      if      (sy < fadeInStart)  { opacity = 0;   ty = TY_IN; }
+      else if (sy < fadeInEnd)    { const t = ease((sy-fadeInStart)/(fadeInEnd-fadeInStart));    opacity = t;   ty = TY_IN*(1-t); }
+      else if (sy < fadeOutStart) { opacity = 1;   ty = 0; }
+      else if (sy < fadeOutEnd)   { const t = ease((sy-fadeOutStart)/(fadeOutEnd-fadeOutStart)); opacity = 1-t; ty = TY_OUT*t; }
+      else                        { opacity = 0;   ty = TY_OUT; }
+
+      el.style.opacity   = opacity;
+      el.style.transform = ty ? `translateY(${ty}px)` : 'none';
+
+      // ── Line draw — stretches across the full slide range ──
+      // drawStart: scroll=0 for first slide, else fadeInStart
+      // drawEnd: for last slide use maxScroll (fadeOutStart is beyond scroll range)
+      const maxScroll = document.body.scrollHeight - vh;
+      const drawStart = i === 0 ? 0 : fadeInStart;
+      const drawEnd   = i === N - 1 ? maxScroll : fadeOutStart;
+      let drawT;
+      if      (sy <= drawStart) drawT = 0;
+      else if (sy >= drawEnd)   drawT = 1;
+      else                      drawT = ease((sy - drawStart) / (drawEnd - drawStart));
+
+      lines[i].style.opacity          = opacity;
+      lines[i].style.strokeDashoffset = lineLens[i] * (1 - drawT);
+
+      if (opacity > maxOp) { maxOp = opacity; activeIdx = i; }
+    });
+
+    dots.forEach((d, i) => d.classList.toggle('on', i === activeIdx));
+  }
+
+  let ticking = false, hintGone = false;
+  window.addEventListener('scroll', () => {
+    if (!hintGone) { hint.classList.add('gone'); hintGone = true; }
+    if (!ticking) {
+      requestAnimationFrame(() => { update(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  update();
+</script>
+</body>
+</html>
