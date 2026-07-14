@@ -1,0 +1,15 @@
+[Unit]
+Description=Wedding Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/wedding-bot
+ExecStart=/home/ubuntu/wedding-bot/venv/bin/python bot.py
+Restart=on-failure
+RestartSec=5
+EnvironmentFile=/home/ubuntu/wedding-bot/.env
+
+[Install]
+WantedBy=multi-user.target
