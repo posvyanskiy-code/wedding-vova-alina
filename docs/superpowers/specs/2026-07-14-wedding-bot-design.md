@@ -64,6 +64,14 @@ Random jokes list:
 
 Random content fires between 16:30 and 20:30 only (during the boat trip).
 
+## Welcome Message
+
+When the bot is added to a group chat, it sends:
+
+> Привет! Я AI-распорядитель свадьбы Владимира и Алины 🎩 Буду с вами весь вечер — шутки шутить, программу объявлять и отвечать на вопросы если тегнете меня.
+
+Triggered by the `my_chat_member` event when bot status changes to `member`/`administrator`.
+
 ## @Mention Handler
 
 When any message in the group contains a mention of the bot (`@botusername`), the bot:
@@ -73,7 +81,7 @@ When any message in the group contains a mention of the bot (`@botusername`), th
 
 System prompt:
 ```
-Ты — весёлый распорядитель свадьбы Владимира и [имя невесты]. 
+Ты — весёлый распорядитель свадьбы Владимира и Алины. 
 Отвечай коротко, дружелюбно, с лёгким юмором. 
 Программа дня: 
   16:30 — посадка на яхту «Алиса», яхт-клуб «Буревестник»

@@ -18,6 +18,7 @@ bot = Bot(token=config.BOT_TOKEN)
 dp = Dispatcher()
 scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
 claude = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+BOT_ID: int | None = None
 
 
 async def send_scheduled(text=None, image=None):
@@ -73,11 +74,23 @@ async def on_bot_added(event: ChatMemberUpdated):
         await bot.send_message(event.chat.id, config.WELCOME_TEXT)
 
 
-@dp.message(F.text.func(lambda t: t and f"@{config.BOT_USERNAME}" in t))
-async def on_mention(message: Message):
-    text = message.text.replace(f"@{config.BOT_USERNAME}", "").strip()
-    if not text:
+@dp.message()
+async def on_message(message: Message):
+    if not message.text:
         return
+    mention = f"@{config.BOT_USERNAME}"
+    is_mention = mention in message.text
+    is_reply_to_bot = (
+        message.reply_to_message is not None
+        and message.reply_to_message.from_user is not None
+        and message.reply_to_message.from_user.id == BOT_ID
+    )
+    if not is_mention and not is_reply_to_bot:
+        return
+    text = message.text.replace(mention, "").strip() if is_mention else message.text
+    if not text:
+        text = "горько!"
+    logging.info(f"Message received: {text}")
     response = claude.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=300,
@@ -99,6 +112,8 @@ def setup_jobs():
 
 
 async def main():
+    global BOT_ID
+    BOT_ID = (await bot.get_me()).id
     setup_jobs()
     scheduler.start()
     await dp.start_polling(bot)
